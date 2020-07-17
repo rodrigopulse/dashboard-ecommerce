@@ -9,7 +9,7 @@
         <b-navbar-nav>
 
           <b-nav-item-dropdown text="Produtos" left>
-            <b-dropdown-item href="#">Adicionar</b-dropdown-item>
+            <b-dropdown-item href="/produto/cadastra">Adicionar</b-dropdown-item>
             <b-dropdown-item href="#">Editar</b-dropdown-item>
           </b-nav-item-dropdown>
 

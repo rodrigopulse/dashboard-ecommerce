@@ -5,6 +5,8 @@ import VueRouter from 'vue-router'
 import Login from '../views/Login'
 import Content from '../views/Content'
 import Home from '../views/Home'
+//Produtos
+import ProdutoCadastra from '../views/ProdutoCadastra'
 
 Vue.use(VueRouter);
 
@@ -20,6 +22,17 @@ const routes = [
         components: {
           default: Content,
           content: Home
+        },
+        meta: {
+          precisaAutenticacao: true,
+        }
+      },
+      {
+        path: "/produto/cadastra",
+        name: "Cadastro de Produo",
+        components: {
+          default: Content,
+          content: ProdutoCadastra
         },
         meta: {
           precisaAutenticacao: true,

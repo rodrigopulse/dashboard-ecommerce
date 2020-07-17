@@ -7,3 +7,10 @@
     </div>
   </div>
 </template>
+<script>
+export default {
+  created () {
+    document.title = "E-commerce - Home";
+  },
+}
+</script>
