@@ -4,7 +4,7 @@ export default class Categoria{
   cadastra(data) {
     return new Promise( (resolve, reject) => {
       axios({
-        url: `${process.env.VUE_APP_BASE_API}/categoria/cadastra`,
+        url: `${process.env.VUE_APP_BASE_API}/categoria`,
         headers: {
           'x-access-token': localStorage.getItem('token'),
           'id-usuario': localStorage.getItem('id')
@@ -19,7 +19,7 @@ export default class Categoria{
   atualiza(data, id) {
     return new Promise( (resolve, reject) => {
       axios({
-        url: `${process.env.VUE_APP_BASE_API}/categoria/atualiza/${id}`,
+        url: `${process.env.VUE_APP_BASE_API}/categoria/${id}`,
         headers: {
           'x-access-token': localStorage.getItem('token'),
           'id-usuario': localStorage.getItem('id')
