@@ -7,6 +7,7 @@ import Content from '../views/Content'
 import Home from '../views/Home'
 //Produtos
 import ProdutoCadastra from '../views/ProdutoCadastra'
+import ProdutoGestao from '../views/ProdutoGestao'
 //Categorias
 import CategoriaCadastra from '../views/CategoriaCadastra'
 import CategoriaGestao from '../views/CategoriaGestao'
@@ -36,6 +37,17 @@ const routes = [
         components: {
           default: Content,
           content: ProdutoCadastra
+        },
+        meta: {
+          precisaAutenticacao: true,
+        }
+      },
+      {
+        path: "/produto/gestao",
+        name: "Gestão de Produo",
+        components: {
+          default: Content,
+          content: ProdutoGestao
         },
         meta: {
           precisaAutenticacao: true,

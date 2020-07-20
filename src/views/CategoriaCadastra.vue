@@ -88,7 +88,7 @@ export default {
       })
     },
     deleta() {
-      this.$bvModal.msgBoxConfirm('Ao excluir a categoria essa ação não poderá ser desfeita', {
+      this.$bvModal.msgBoxConfirm('Ao excluir a categoria, essa ação não poderá ser desfeita', {
         title: 'Tem certeza que deseja excluir essa categoria',
         size: 'sm',
         buttonSize: 'lg',

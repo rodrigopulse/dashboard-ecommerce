@@ -1,11 +1,11 @@
 <template>
   <div class="container">
-
+    <Alerta :mensagem="alerta.mensagem" :tipo="alerta.tipo" :estado="alerta.show" />
     <div class="crop-imagem" v-if="mostraCrop">
       <VueCropper
         ref="cropper"
         :aspect-ratio="aspectRatio"
-        output-size="600"
+        :output-size="600"
         :src="imgSrc"
         alt="Imagem Crop"
       />
@@ -113,7 +113,8 @@
             </div>
           </div>
           <div class="row mb-5">
-            <div class="col-4">
+
+            <div class="col-3">
 
               <input
                 ref="imagem1"
@@ -133,6 +134,70 @@
               </div>
 
             </div>
+
+            <div class="col-3">
+
+              <input
+                ref="imagem2"
+                type="file"
+                style="display: none;"
+                @change="abreCrop('imagem2', $event)"
+              />
+              <div class="row mb-2">
+                <div class="col-12">
+                  <b-button @click="removeCrop('imagem2')" size="sm" type="button" variant="danger">remover</b-button>
+                </div>
+              </div>
+
+              <div class="campo-imagem" @click="$refs.imagem2.click(); aspectRatio = 1 / 1">
+                <img v-if="imagem2Preview" :src="imagem2Preview" alt="Imagem Destaque" />
+                <span class="campo-imagem__texto" v-else>Imagem com 600px x 600px</span>
+              </div>
+
+            </div>
+
+            <div class="col-3">
+
+              <input
+                ref="imagem3"
+                type="file"
+                style="display: none;"
+                @change="abreCrop('imagem3', $event)"
+              />
+              <div class="row mb-2">
+                <div class="col-12">
+                  <b-button @click="removeCrop('imagem3')" size="sm" type="button" variant="danger">remover</b-button>
+                </div>
+              </div>
+
+              <div class="campo-imagem" @click="$refs.imagem3.click(); aspectRatio = 1 / 1">
+                <img v-if="imagem3Preview" :src="imagem3Preview" alt="Imagem Destaque" />
+                <span class="campo-imagem__texto" v-else>Imagem com 600px x 600px</span>
+              </div>
+
+            </div>
+
+            <div class="col-3">
+
+              <input
+                ref="imagem4"
+                type="file"
+                style="display: none;"
+                @change="abreCrop('imagem4', $event)"
+              />
+              <div class="row mb-2">
+                <div class="col-12">
+                  <b-button @click="removeCrop('imagem4')" size="sm" type="button" variant="danger">remover</b-button>
+                </div>
+              </div>
+
+              <div class="campo-imagem" @click="$refs.imagem4.click(); aspectRatio = 1 / 1">
+                <img v-if="imagem4Preview" :src="imagem4Preview" alt="Imagem Destaque" />
+                <span class="campo-imagem__texto" v-else>Imagem com 600px x 600px</span>
+              </div>
+
+            </div>
+
           </div>
 
           <div class="row">
@@ -149,10 +214,13 @@
 </template>
 <script>
 import Categoria from '../api/categoria'
-import VueCropper from "vue-cropperjs"
+import Produto from '../api/produto'
+import VueCropper from 'vue-cropperjs'
+import Alerta from '../components/Alerta'
 import {VMoney} from 'v-money'
 
 const categoria = new Categoria()
+const produto = new Produto()
 
 export default {
   data() {
@@ -171,6 +239,11 @@ export default {
         prefix: 'R$ ',
         precision: 2,
       },
+      alerta: {
+        show: false,
+        mensagem: '',
+        tipo: ''
+      },
       // Crop
       imgSrc: '',
       mostraCrop: false,
@@ -178,25 +251,43 @@ export default {
       //Imagens
       imagem1: '',
       imagem1Preview: '',
+      imagem2: '',
+      imagem2Preview: '',
+      imagem3: '',
+      imagem3Preview: '',
+      imagem4: '',
+      imagem4Preview: '',
 
       titulo: 'Cadastro de Produto',
       botao: 'Cadastrar',
       edicao: false,
       categorias: [],
-      alerta: false,
-      alertaMensagem: '',
-      alertaTipo: ''
     }
   },
   directives: {money: VMoney},
   created () {
     document.title = "E-commerce - Cadastro de Produto";
+    if (this.$route.query.id) {
+      this.get(this.$route.query.id)
+    }
     this.getCategoria()
   },
   components: {
-    VueCropper
+    VueCropper,
+    Alerta
   },
   methods: {
+    get(id) {
+      produto.getProduto(id)
+      .then( (res) => {
+        this.edicao = true
+        this.form = res.data
+        this.imagem1Preview = `http://localhost:3333/imagens/${res.data.imagens[0]}`
+        this.imagem2Preview = `http://localhost:3333/imagens/${res.data.imagens[1]}`
+        this.imagem3Preview = `http://localhost:3333/imagens/${res.data.imagens[3]}`
+        this.imagem4Preview = `http://localhost:3333/imagens/${res.data.imagens[4]}`
+      })
+    },
     abreCrop(tipo, imagem) {
       const arquivo = imagem.target.files[0];
       if (typeof FileReader === "function") {
@@ -209,7 +300,6 @@ export default {
         };
         reader.readAsDataURL(arquivo);
       }
-      console.log(tipo)
       this.imagemAtiva = tipo
       return true;
     },
@@ -218,6 +308,18 @@ export default {
         case 'imagem1':
           this.imagem1 = ''
           this.imagem1Preview = ''
+          break;
+        case 'imagem2':
+          this.imagem2 = ''
+          this.imagem2Preview = ''
+          break;
+        case 'imagem3':
+          this.imagem3 = ''
+          this.imagem3Preview = ''
+          break;
+        case 'imagem4':
+          this.imagem4 = ''
+          this.imagem4Preview = ''
           break;
         default:
           break;
@@ -228,6 +330,18 @@ export default {
         if (this.imagemAtiva == "imagem1") {
           this.imagem1 = blob;
           this.imagem1Preview = URL.createObjectURL(this.imagem1);
+        }
+        if (this.imagemAtiva == "imagem2") {
+          this.imagem2 = blob;
+          this.imagem2Preview = URL.createObjectURL(this.imagem2);
+        }
+        if (this.imagemAtiva == "imagem3") {
+          this.imagem3 = blob;
+          this.imagem3Preview = URL.createObjectURL(this.imagem3);
+        }
+        if (this.imagemAtiva == "imagem4") {
+          this.imagem4 = blob;
+          this.imagem4Preview = URL.createObjectURL(this.imagem4);
         }
       }, "image/jpeg");
       this.mostraCrop = false;
@@ -240,8 +354,81 @@ export default {
         this.categorias = res.data
       })
     },
+    deleta() {
+      this.$bvModal.msgBoxConfirm('Ao excluir o produto, essa ação não poderá ser desfeita', {
+        title: 'Tem certeza que deseja excluir esse produto',
+        size: 'sm',
+        buttonSize: 'lg',
+        okVariant: 'danger',
+        okTitle: 'Excluir',
+        cancelTitle: 'Cancelar',
+        footerClass: 'p-3',
+        hideHeaderClose: false,
+        centered: true
+      })
+        .then( (valor) => {
+          if(valor) {
+            produto.deleta(this.$route.query.id)
+            .then( () => {
+              this.$router.push('/produto/gestao')
+            })
+          }
+        })
+        .catch(() => {
+
+        })
+    },
     onSubmit() {
-      console.log(this.form)
+      if(this.edicao) {
+        const formData = new FormData()
+        formData.append('titulo', this.form.titulo)
+        formData.append('descricao', this.form.descricao)
+        formData.append('peso', this.form.peso)
+        formData.append('estoque', this.form.estoque)
+        formData.append('categoria', this.form.categoria)
+        formData.append('destaque', this.form.destaque)
+        formData.append('preco', this.form.preco)
+        formData.append('imagens', this.imagem1)
+        produto.atualiza(formData)
+        .then( () => {
+          this.alerta = {
+            show: true,
+            mensagem: 'Produto atualizado com sucesso',
+            tipo: 'success'
+          }
+          this.form.titulo = ''
+        }) .catch( () => {
+          this.alerta = {
+            show: true,
+            mensagem: 'Ocorreu um erro',
+            tipo: 'danger'
+          }
+        })
+      } else {
+        const formData = new FormData()
+        formData.append('titulo', this.form.titulo)
+        formData.append('descricao', this.form.descricao)
+        formData.append('peso', this.form.peso)
+        formData.append('estoque', this.form.estoque)
+        formData.append('categoria', this.form.categoria)
+        formData.append('destaque', this.form.destaque)
+        formData.append('preco', this.form.preco)
+        formData.append('imagens', this.imagem1)
+        produto.cadastra(formData)
+        .then( () => {
+          this.alerta = {
+            show: true,
+            mensagem: 'Produto cadastrado com sucesso',
+            tipo: 'success'
+          }
+        }) .catch( () => {
+          this.alerta = {
+            show: true,
+            mensagem: 'Ocorreu um erro',
+            tipo: 'danger'
+          }
+        })
+      }
     }
   }
 }

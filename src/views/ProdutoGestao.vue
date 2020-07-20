@@ -3,14 +3,14 @@
     <Alerta :mensagem="alertaMensagem" :tipo="alertaTipo" :estado="alerta" />
     <div class="row">
       <div class="col-12">
-        <h1>Gestão de Categorias</h1>
+        <h1>Gestão de Produtos</h1>
       </div>
     </div>
     <div class="row">
       <div class="col-12 mt-3">
         <b-table striped hover :items="dados" :fields="fields">
           <template v-slot:cell(titulo)="data">
-            <a :href="`/categoria/cadastra?id=${data.item._id}`">{{ data.value }}</a>
+            <a :href="`/produto/cadastra?id=${data.item._id}`">{{ data.value }}</a>
           </template>
         </b-table>
       </div>
@@ -18,11 +18,11 @@
   </div>
 </template>
 <script>
-import Categoria from '../api/categoria'
+import Produto from '../api/produto'
 // Components
 import Alerta from '../components/Alerta'
 
-const categoria = new Categoria()
+const produto = new Produto()
 
 export default {
   data() {
@@ -36,14 +36,14 @@ export default {
   },
   created () {
     document.title = "E-commerce - Gestão de Categoria";
-    this.getCategorias()
+    this.getProdutos()
   },
   components: {
     Alerta
   },
   methods: {
-    getCategorias() {
-      categoria.getCategorias()
+    getProdutos() {
+      produto.getProdutos()
       .then( (res) => {
         this.dados = res.data
       })
