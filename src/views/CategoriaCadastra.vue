@@ -34,8 +34,8 @@
             ></b-form-textarea>
           </b-form-group>
 
-          <b-button v-if="edicao" @click=deleta class="mr-3" variant="danger" type="button">Deletar</b-button>
-          <b-button type="submit" variant="primary">{{this.botao}}</b-button>
+          <b-button size="lg" v-if="edicao" @click=deleta class="mr-3" variant="danger" type="button">Deletar</b-button>
+          <b-button size="lg" type="submit" variant="primary">{{this.botao}}</b-button>
 
         </b-form>
       </div>
