@@ -7,6 +7,9 @@ import Content from '../views/Content'
 import Home from '../views/Home'
 //Produtos
 import ProdutoCadastra from '../views/ProdutoCadastra'
+//Categorias
+import CategoriaCadastra from '../views/CategoriaCadastra'
+import CategoriaGestao from '../views/CategoriaGestao'
 
 Vue.use(VueRouter);
 
@@ -33,6 +36,28 @@ const routes = [
         components: {
           default: Content,
           content: ProdutoCadastra
+        },
+        meta: {
+          precisaAutenticacao: true,
+        }
+      },
+      {
+        path: "/categoria/cadastra",
+        name: "Cadastro de Categoria",
+        components: {
+          default: Content,
+          content: CategoriaCadastra
+        },
+        meta: {
+          precisaAutenticacao: true,
+        }
+      },
+      {
+        path: "/categoria/gestao",
+        name: "Gestão de Categoria",
+        components: {
+          default: Content,
+          content: CategoriaGestao
         },
         meta: {
           precisaAutenticacao: true,

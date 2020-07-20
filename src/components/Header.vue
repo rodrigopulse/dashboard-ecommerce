@@ -14,8 +14,8 @@
           </b-nav-item-dropdown>
 
           <b-nav-item-dropdown text="Categorias" left>
-            <b-dropdown-item href="#">Adicionar</b-dropdown-item>
-            <b-dropdown-item href="#">Editar</b-dropdown-item>
+            <b-dropdown-item href="/categoria/cadastra">Adicionar</b-dropdown-item>
+            <b-dropdown-item href="/categoria/gestao">Gestão</b-dropdown-item>
           </b-nav-item-dropdown>
 
           <b-nav-item-dropdown text="Usuários" left>

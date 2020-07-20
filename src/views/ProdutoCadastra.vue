@@ -71,7 +71,7 @@ export default {
     document.title = "E-commerce - Cadastro de Produto";
   },
   methods: {
-    onsSubmit() {
+    onSubmit() {
 
     }
   }
