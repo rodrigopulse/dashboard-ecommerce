@@ -280,12 +280,22 @@ export default {
     get(id) {
       produto.getProduto(id)
       .then( (res) => {
+        this.titulo = 'Edição de Produto'
+        this.botao = 'Salvar'
         this.edicao = true
         this.form = res.data
-        this.imagem1Preview = `http://localhost:3333/imagens/${res.data.imagens[0]}`
-        this.imagem2Preview = `http://localhost:3333/imagens/${res.data.imagens[1]}`
-        this.imagem3Preview = `http://localhost:3333/imagens/${res.data.imagens[3]}`
-        this.imagem4Preview = `http://localhost:3333/imagens/${res.data.imagens[4]}`
+        if(res.data.imagens[0] != undefined) {
+          this.imagem1Preview = `http://localhost:3333/imagens/${res.data.imagens[0].filename}`
+        }
+        if(res.data.imagens[1] != undefined) {
+          this.imagem2Preview = `http://localhost:3333/imagens/${res.data.imagens[1].filename}`
+        }
+        if(res.data.imagens[2] != undefined) {
+          this.imagem3Preview = `http://localhost:3333/imagens/${res.data.imagens[2].filename}`
+        }
+        if(res.data.imagens[3] != undefined) {
+          this.imagem4Preview = `http://localhost:3333/imagens/${res.data.imagens[3].filename}`
+        }
       })
     },
     abreCrop(tipo, imagem) {
