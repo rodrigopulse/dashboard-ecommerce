@@ -16,10 +16,10 @@ export default class Produto{
       .catch((res) => reject(res));
     })
   }
-  atualiza(data) {
+  atualiza(data, id) {
     return new Promise( (resolve, reject) => {
       axios({
-        url: `${process.env.VUE_APP_BASE_API}/produto`,
+        url: `${process.env.VUE_APP_BASE_API}/produto/${id}`,
         headers: {
           'x-access-token': localStorage.getItem('token'),
           'id-usuario': localStorage.getItem('id')

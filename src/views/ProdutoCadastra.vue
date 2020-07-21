@@ -286,17 +286,46 @@ export default {
         this.form = res.data
         if(res.data.imagens[0] != undefined) {
           this.imagem1Preview = `http://localhost:3333/imagens/${res.data.imagens[0].filename}`
+          this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[0].filename}`).then((blob) => {
+            this.imagem1 = blob
+          })
         }
         if(res.data.imagens[1] != undefined) {
           this.imagem2Preview = `http://localhost:3333/imagens/${res.data.imagens[1].filename}`
+          this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[1].filename}`).then((blob) => {
+            this.imagem2 = blob
+          })
         }
         if(res.data.imagens[2] != undefined) {
           this.imagem3Preview = `http://localhost:3333/imagens/${res.data.imagens[2].filename}`
+          this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[2].filename}`).then((blob) => {
+            this.imagem3 = blob
+          })
         }
         if(res.data.imagens[3] != undefined) {
           this.imagem4Preview = `http://localhost:3333/imagens/${res.data.imagens[3].filename}`
+          this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[3].filename}`).then((blob) => {
+            this.imagem4 = blob
+          })
         }
       })
+    },
+    getBlob(url) {
+      return new Promise(function(resolve, reject) {
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url);
+            xhr.responseType = "blob";
+            xhr.onerror = function() {reject("Network error.")};
+            xhr.onload = function() {
+                if (xhr.status === 200) {resolve(xhr.response)}
+                else {reject("Loading error:" + xhr.statusText)}
+            };
+            xhr.send();
+        }
+        catch(err) {reject(err.message)}
+    });
+
     },
     abreCrop(tipo, imagem) {
       const arquivo = imagem.target.files[0];
@@ -399,14 +428,16 @@ export default {
         formData.append('destaque', this.form.destaque)
         formData.append('preco', this.form.preco)
         formData.append('imagens', this.imagem1)
-        produto.atualiza(formData)
+        formData.append('imagens', this.imagem2)
+        formData.append('imagens', this.imagem3)
+        formData.append('imagens', this.imagem4)
+        produto.atualiza(formData, this.$route.query.id)
         .then( () => {
           this.alerta = {
             show: true,
             mensagem: 'Produto atualizado com sucesso',
             tipo: 'success'
           }
-          this.form.titulo = ''
         }) .catch( () => {
           this.alerta = {
             show: true,
@@ -424,6 +455,9 @@ export default {
         formData.append('destaque', this.form.destaque)
         formData.append('preco', this.form.preco)
         formData.append('imagens', this.imagem1)
+        formData.append('imagens', this.imagem2)
+        formData.append('imagens', this.imagem3)
+        formData.append('imagens', this.imagem4)
         produto.cadastra(formData)
         .then( () => {
           this.alerta = {
