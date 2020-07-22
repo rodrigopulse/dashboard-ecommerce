@@ -1,5 +1,5 @@
 <template>
-  <b-alert class="alerta" v-model="estado" :variant="tipo" @dismissed="dismissCountDown=0" @dismiss-count-down="countDownChanged" dismissible>{{ mensagem }}</b-alert>
+  <b-alert class="alerta" v-model="estado" :variant="tipo" dismissible>{{ mensagem }}</b-alert>
 </template>
 <script>
 export default {

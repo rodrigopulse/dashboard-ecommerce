@@ -391,7 +391,6 @@ export default {
     getCategoria() {
       categoria.getCategorias()
       .then( (res) => {
-        console.log(res.data)
         this.categorias = res.data
       })
     },
