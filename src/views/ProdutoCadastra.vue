@@ -284,6 +284,7 @@ export default {
         this.botao = 'Salvar'
         this.edicao = true
         this.form = res.data
+        this.form.categoria = res.data.categoria._id
         if(res.data.imagens[0] != undefined) {
           this.imagem1Preview = `http://localhost:3333/imagens/${res.data.imagens[0].filename}`
           this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[0].filename}`).then((blob) => {
@@ -390,6 +391,7 @@ export default {
     getCategoria() {
       categoria.getCategorias()
       .then( (res) => {
+        console.log(res.data)
         this.categorias = res.data
       })
     },
@@ -438,6 +440,7 @@ export default {
             mensagem: 'Produto atualizado com sucesso',
             tipo: 'success'
           }
+          this.get(this.$route.query.id)
         }) .catch( () => {
           this.alerta = {
             show: true,

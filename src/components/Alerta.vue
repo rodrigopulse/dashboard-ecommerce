@@ -1,8 +1,14 @@
 <template>
-  <b-alert class="alerta" :show="estado" :variant="tipo" dismissible>{{ mensagem }}</b-alert>
+  <b-alert class="alerta" v-model="estado" :variant="tipo" @dismissed="dismissCountDown=0" @dismiss-count-down="countDownChanged" dismissible>{{ mensagem }}</b-alert>
 </template>
 <script>
 export default {
+  data() {
+    return {
+      dismissSecs: 10,
+      dismissCountDown: 0,
+    }
+  },
   props: ['tipo', 'mensagem', 'estado']
 }
 </script>

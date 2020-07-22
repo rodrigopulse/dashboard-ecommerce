@@ -35,7 +35,7 @@ export default {
     }
   },
   created () {
-    document.title = "E-commerce - Gestão de Categoria";
+    document.title = "E-commerce - Gestão de Produtos";
     this.getProdutos()
   },
   components: {
