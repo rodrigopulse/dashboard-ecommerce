@@ -52,8 +52,7 @@
 
           <div class="row">
             <div class="col-4">
-
-              <b-form-group prepend="R$" id="preco" label="Preço:">
+              <b-form-group id="preco" label="Preço:">
                 <b-form-input
                   v-model.lazy="form.preco"
                   required
@@ -221,7 +220,12 @@ import {VMoney} from 'v-money'
 
 const categoria = new Categoria()
 const produto = new Produto()
-
+const formataPrecoBrasil = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+  minimumFractionDigits: 2,
+  prefix: 'R$ ',
+})
 export default {
   data() {
     return {
@@ -236,8 +240,8 @@ export default {
       money: {
         decimal: ',',
         thousands: '.',
-        prefix: 'R$ ',
         precision: 2,
+        prefix: 'R$ '
       },
       alerta: {
         show: false,
@@ -284,6 +288,7 @@ export default {
         this.botao = 'Salvar'
         this.edicao = true
         this.form = res.data
+        this.form.preco = formataPrecoBrasil.format(res.data.preco.toString())
         this.form.categoria = res.data.categoria._id
         if(res.data.imagens[0] != undefined) {
           this.imagem1Preview = `http://localhost:3333/imagens/${res.data.imagens[0].filename}`
@@ -394,6 +399,13 @@ export default {
         this.categorias = res.data
       })
     },
+    transformaPreco(preco) {
+      const precoTiraCifrao = preco.replace('R$ ', '')
+      const precoTiraPonto = precoTiraCifrao.replace('.', '')
+      const precoTiraVirgula = precoTiraPonto.replace(',', '.')
+      const precoNumber = parseFloat(precoTiraVirgula)
+      return precoNumber
+    },
     deleta() {
       this.$bvModal.msgBoxConfirm('Ao excluir o produto, essa ação não poderá ser desfeita', {
         title: 'Tem certeza que deseja excluir esse produto',
@@ -427,7 +439,7 @@ export default {
         formData.append('estoque', this.form.estoque)
         formData.append('categoria', this.form.categoria)
         formData.append('destaque', this.form.destaque)
-        formData.append('preco', this.form.preco)
+        formData.append('preco', this.transformaPreco(this.form.preco))
         formData.append('imagens', this.imagem1)
         formData.append('imagens', this.imagem2)
         formData.append('imagens', this.imagem3)
@@ -455,7 +467,7 @@ export default {
         formData.append('estoque', this.form.estoque)
         formData.append('categoria', this.form.categoria)
         formData.append('destaque', this.form.destaque)
-        formData.append('preco', this.form.preco)
+        formData.append('preco', this.transformaPreco(this.form.preco))
         formData.append('imagens', this.imagem1)
         formData.append('imagens', this.imagem2)
         formData.append('imagens', this.imagem3)
