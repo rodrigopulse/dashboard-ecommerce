@@ -11,6 +11,8 @@ import ProdutoGestao from '../views/ProdutoGestao'
 //Categorias
 import CategoriaCadastra from '../views/CategoriaCadastra'
 import CategoriaGestao from '../views/CategoriaGestao'
+//Pedidos
+import PedidoGestao from '../views/PedidoGestao'
 
 Vue.use(VueRouter);
 
@@ -70,6 +72,17 @@ const routes = [
         components: {
           default: Content,
           content: CategoriaGestao
+        },
+        meta: {
+          precisaAutenticacao: true,
+        }
+      },
+      {
+        path: "/pedido/gestao",
+        name: "Gestão de Pedidos",
+        components: {
+          default: Content,
+          content: PedidoGestao
         },
         meta: {
           precisaAutenticacao: true,

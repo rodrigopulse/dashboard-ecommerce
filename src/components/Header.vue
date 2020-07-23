@@ -23,7 +23,7 @@
             <b-dropdown-item href="#">Editar</b-dropdown-item>
           </b-nav-item-dropdown>
 
-          <b-nav-item href="#">Pedidos</b-nav-item>
+          <b-nav-item href="/pedido/gestao">Pedidos</b-nav-item>
 
         </b-navbar-nav>
       </b-collapse>

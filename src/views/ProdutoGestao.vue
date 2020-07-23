@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Alerta :mensagem="alertaMensagem" :tipo="alertaTipo" :estado="alerta" />
+    <Alerta :mensagem="alerta.mensagem" :tipo="alerta.tipo" :estado="alerta.show" />
     <div class="row">
       <div class="col-12">
         <h1>Gestão de Produtos</h1>
@@ -27,9 +27,11 @@ const produto = new Produto()
 export default {
   data() {
     return {
-      alerta: false,
-      alertaMensagem: '',
-      alertaTipo: '',
+      alerta: {
+        show: false,
+        mensagem: '',
+        tipo: ''
+      },
       dados: [],
       fields: [{ key: 'titulo', label: 'Título' }, { key: 'descricao', label: 'Descrição' }],
     }
