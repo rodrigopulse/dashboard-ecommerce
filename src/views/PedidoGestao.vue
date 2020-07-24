@@ -60,7 +60,6 @@ export default {
       pedido.getPedidos()
       .then( (res) => {
         res.data.forEach((valor) => {
-          console.log(valor)
           let valorPedido = formataPrecoBrasil.format(valor.valor.toString())
           let valorFrete = formataPrecoBrasil.format(valor.frete.toString())
           this.dados.push({
