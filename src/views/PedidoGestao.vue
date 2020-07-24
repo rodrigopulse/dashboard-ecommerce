@@ -68,7 +68,7 @@ export default {
             'preco': valorPedido,
             'frete': valorFrete,
             'usuario': valor.usuario.email,
-            status: valor.status
+            'status': valor.status
           })
         });
       })
