@@ -39,7 +39,13 @@ export default {
         tipo: ''
       },
       dados: [],
-      fields: [{ key: 'codigo', label: 'Código' }, { key: 'preco', label: 'Valor' }, { key: 'frete', label: 'Frete' }, { key: 'usuario', label: 'Comprador' }],
+      fields: [
+        { key: 'codigo', label: 'Código' },
+        { key: 'preco', label: 'Valor' },
+        { key: 'frete', label: 'Frete' },
+        { key: 'usuario', label: 'Comprador' },
+        { key: 'status', label: 'Status' },
+      ],
     }
   },
   created () {
@@ -57,7 +63,13 @@ export default {
           console.log(valor)
           let valorPedido = formataPrecoBrasil.format(valor.valor.toString())
           let valorFrete = formataPrecoBrasil.format(valor.frete.toString())
-          this.dados.push({ 'codigo': valor.codigoPedido, 'preco': valorPedido, 'frete': valorFrete, 'usuario': valor.usuario.email })
+          this.dados.push({
+            'codigo': valor.codigoPedido,
+            'preco': valorPedido,
+            'frete': valorFrete,
+            'usuario': valor.usuario.email,
+            status: valor.status
+          })
         });
       })
     }
