@@ -15,12 +15,14 @@
         </b-table>
       </div>
     </div>
+    <Paginacao @pagina="selecionaPagina" :totalPaginas="paginacao.total" v-if="paginacao.total > 1"/>
   </div>
 </template>
 <script>
 import Produto from '../api/produto'
 // Components
 import Alerta from '../components/Alerta'
+import Paginacao from '../components/Paginacao'
 
 const produto = new Produto()
 
@@ -32,23 +34,31 @@ export default {
         mensagem: '',
         tipo: ''
       },
+      paginacao: {
+        total: ''
+      },
       dados: [],
       fields: [{ key: 'titulo', label: 'Título' }, { key: 'descricao', label: 'Descrição' }],
     }
   },
   created () {
     document.title = "E-commerce - Gestão de Produtos";
-    this.getProdutos()
+    this.getProdutos(1)
   },
   components: {
-    Alerta
+    Alerta,
+    Paginacao
   },
   methods: {
-    getProdutos() {
-      produto.getProdutos(20, 1)
+    getProdutos(pagina) {
+      produto.getProdutos(20, pagina)
       .then( (res) => {
+        this.paginacao.total = res.data.totalPaginas
         this.dados = res.data.produto
       })
+    },
+    selecionaPagina(e) {
+      this.getProdutos(e)
     }
   }
 }
