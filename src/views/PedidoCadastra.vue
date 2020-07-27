@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <Alerta :mensagem="alerta.mensagem" :tipo="alerta.tipo" :estado="alerta.show" />
     <div class="row">
       <div class="col-12">
         <h1>Pedido {{codigoPedido}}</h1>
@@ -58,13 +59,14 @@
     </div>
     <div class="row">
       <div class="col-12">
-        <b-button size="lg" type="submit" variant="primary">Salvar</b-button>
+        <b-button size="lg" type="button" @click="atualiza" variant="primary">Salvar</b-button>
       </div>
     </div>
   </div>
 </template>
 <script>
 import Pedido from '../api/pedido'
+import Alerta from '../components/Alerta'
 
 const pedido = new Pedido()
 
@@ -89,12 +91,20 @@ export default {
         opcoes: [{ status: 'Separação' }, { status: 'Enviado' }, { status: 'Entregue' }, { status: 'Cancelado' }],
         selecionado: ''
       },
+      alerta: {
+        show: false,
+        mensagem: '',
+        tipo: ''
+      },
       fields: [
         { key: 'titulo', label: 'Produto' },
         { key: 'quantidade', label: 'Quantidade' },
         { key: 'valorUnitario', label: 'Valor Unitário' }
       ],
     }
+  },
+  components: {
+    Alerta
   },
   created() {
     document.title = "E-commerce - Edição de Pedido";
@@ -122,6 +132,26 @@ export default {
           })
         });
 
+      })
+    },
+    atualiza() {
+      const data = {
+        status: this.status.selecionado
+      }
+      pedido.atualiza(data, this.$route.query.id)
+      .then( () => {
+        this.alerta = {
+          show: true,
+          mensagem: 'Pedido atualizado com sucesso',
+          tipo: 'success'
+        }
+      })
+      .catch( () => {
+        this.alerta = {
+          show: true,
+          mensagem: 'Pedido não atualizado',
+          tipo: 'danger'
+        }
       })
     }
   }
