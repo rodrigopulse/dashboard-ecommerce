@@ -45,9 +45,9 @@ export default {
   },
   methods: {
     getProdutos() {
-      produto.getProdutos()
+      produto.getProdutos(20, 1)
       .then( (res) => {
-        this.dados = res.data
+        this.dados = res.data.produto
       })
     }
   }

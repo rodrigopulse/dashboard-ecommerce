@@ -55,10 +55,10 @@ export default class Produto{
       .catch((res) => reject(res));
     })
   }
-  getProdutos() {
+  getProdutos(limite, pagina) {
     return new Promise( (resolve, reject) => {
       axios({
-        url: `${process.env.VUE_APP_BASE_API}/produto`,
+        url: `${process.env.VUE_APP_BASE_API}/produto?limite=${limite}&pagina=${pagina}`,
         method: "GET"
       })
       .then( res => resolve(res))
