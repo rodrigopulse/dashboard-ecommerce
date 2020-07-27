@@ -21,9 +21,23 @@
     <div class="row">
       <div class="col-6">
 
-        <b-form-group label="Status:" id="categoria">
-          <b-form-select required v-model="status.selecionado" :options="status.opcoes" value-field="status" text-field="status"></b-form-select>
+        <b-form-group label="Status:" id="status">
+          <b-form-select size="lg" required v-model="status.selecionado" :options="status.opcoes" value-field="status" text-field="status"></b-form-select>
         </b-form-group>
+
+      </div>
+      <div class="col-6">
+
+        <b-form-group
+            id="rastreio"
+            label="Cód. de Rastreio:"
+          >
+            <b-form-input
+              v-model="rastreio"
+              size="lg"
+              placeholder="Digite o código de rastreio"
+            ></b-form-input>
+          </b-form-group>
 
       </div>
     </div>
@@ -83,6 +97,7 @@ export default {
       usuario: [],
       endereco: [],
       produtos: [],
+      rastreio: '',
       valorPedido: '',
       valorFrete: '',
       valorTotal: '',
@@ -114,6 +129,7 @@ export default {
     getPedido(id) {
       pedido.getPedido(id)
       .then( (res) => {
+        console.log(res.data)
         this.valorPedido = formataPrecoBrasil.format(res.data.valor.toString())
         this.valorFrete = formataPrecoBrasil.format(res.data.frete.toString())
         const valorTotalSoma = res.data.valor + res.data.frete
@@ -122,6 +138,7 @@ export default {
         this.usuario = res.data.usuario
         this.endereco = res.data.usuario.endereco
         this.codigoPedido = res.data.codigoPedido
+        this.rastreio = res.data.rastreio
         res.data.produtos.forEach((valor) => {
           let valorProduto = formataPrecoBrasil.format(valor.produto.preco.toString())
           this.produtos.push({
@@ -136,7 +153,8 @@ export default {
     },
     atualiza() {
       const data = {
-        status: this.status.selecionado
+        status: this.status.selecionado,
+        rastreio: this.rastreio
       }
       pedido.atualiza(data, this.$route.query.id)
       .then( () => {
