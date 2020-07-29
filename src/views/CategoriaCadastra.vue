@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <Alerta :mensagem="alertaMensagem" :tipo="alertaTipo" :estado="alerta" />
+    <Carregando v-if="carregando" />
     <div class="row">
       <div class="col-12">
         <h1>{{this.titulo}}</h1>
@@ -46,6 +47,7 @@
 import Categoria from '../api/categoria'
 // Components
 import Alerta from '../components/Alerta'
+import Carregando from '../components/Carregando'
 
 const categoria = new Categoria()
 
@@ -56,6 +58,7 @@ export default {
         titulo: '',
         descricao: ''
       },
+      carregando: false,
       titulo: 'Cadastro de Categoria',
       botao: 'Cadastrar',
       alerta: false,
@@ -64,28 +67,32 @@ export default {
       edicao: false
     }
   },
+  components: {
+    Alerta,
+    Carregando
+  },
   created () {
     document.title = `E-commerce - ${this.titulo}`;
     if (this.$route.query.id) {
       this.get(this.$route.query.id)
     }
   },
-  components: {
-    Alerta
-  },
   methods: {
     get(id) {
+      this.carregando = true
       categoria.getCategoria(id)
-      .then( (res) => {
-        this.edicao = true
-        this.form = res.data
-        this.titulo = 'Edição de Categoria'
-        this.botao = 'Salvar'
-      }) .catch( () => {
-        this.alerta = true
-        this.alertaMensagem = 'Categoria não encontrada'
-        this.alertaTipo = 'danger'
-      })
+        .then( (res) => {
+          this.carregando = false
+          this.edicao = true
+          this.form = res.data
+          this.titulo = 'Edição de Categoria'
+          this.botao = 'Salvar'
+        }) .catch( () => {
+          this.carregando = false
+          this.alerta = true
+          this.alertaMensagem = 'Categoria não encontrada'
+          this.alertaTipo = 'danger'
+        })
     },
     deleta() {
       this.$bvModal.msgBoxConfirm('Ao excluir a categoria, essa ação não poderá ser desfeita', {
@@ -100,42 +107,49 @@ export default {
         centered: true
       })
         .then( (valor) => {
+          this.carregando = true
           if(valor) {
             categoria.deleta(this.$route.query.id)
             .then( () => {
+              this.carregando = false
               this.$router.push('/categoria/gestao')
             })
           }
         })
         .catch(() => {
-
+          this.carregando = false
         })
     },
     onSubmit() {
+      this.carregando = true
       if(this.edicao) {
         categoria.atualiza(this.form, this.$route.query.id)
-        .then( () => {
-          this.alerta = true
-          this.alertaMensagem = 'Categoria atualizada com sucesso'
-          this.alertaTipo = 'success'
-        }) .catch( () => {
-          this.alerta = true
-          this.alertaMensagem = 'Ocorreu um erro'
-          this.alertaTipo = 'danger'
-        })
+          .then( () => {
+            this.carregando = false
+            this.alerta = true
+            this.alertaMensagem = 'Categoria atualizada com sucesso'
+            this.alertaTipo = 'success'
+          }) .catch( () => {
+            this.carregando = false
+            this.alerta = true
+            this.alertaMensagem = 'Ocorreu um erro'
+            this.alertaTipo = 'danger'
+          })
       } else {
-      categoria.cadastra(this.form)
-        .then( () => {
-          this.alerta = true
-          this.alertaMensagem = 'Categoria cadastrada com sucesso'
-          this.alertaTipo = 'success'
-          this.form.titulo = ''
-          this.form.descricao = ''
-        }) .catch( () => {
-          this.alerta = true
-          this.alertaMensagem = 'Ocorreu um erro'
-          this.alertaTipo = 'danger'
-        })
+        categoria.cadastra(this.form)
+          .then( () => {
+            this.carregando = false
+            this.alerta = true
+            this.alertaMensagem = 'Categoria cadastrada com sucesso'
+            this.alertaTipo = 'success'
+            this.form.titulo = ''
+            this.form.descricao = ''
+          }) .catch( () => {
+            this.carregando = false
+            this.alerta = true
+            this.alertaMensagem = 'Ocorreu um erro'
+            this.alertaTipo = 'danger'
+          })
       }
     }
   }
