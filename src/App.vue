@@ -66,4 +66,7 @@ body {
     font-size: 14px;
   }
 }
+.spinner-grow {
+  vertical-align: initial;
+}
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <Alerta :mensagem="alerta.mensagem" :tipo="alerta.tipo" :estado="alerta.show" />
+    <Carregando v-if="carregando"/>
     <div class="row">
       <div class="col-6">
         <h1>Gestão de Produtos</h1>
@@ -10,9 +11,9 @@
           size="lg"
           class="mb-3"
         >
-          <b-form-input v-model="busca" placeholder="Encontre o produto"></b-form-input>
+          <b-form-input @keyup.enter="buscar()" v-model="busca" placeholder="Encontre o produto"></b-form-input>
           <b-input-group-append>
-            <b-button size="sm" text="Button" @click="buscar()" variant="primary">Buscar</b-button>
+            <b-button text="Button" @click="buscar()" variant="primary">Buscar</b-button>
           </b-input-group-append>
         </b-input-group>
       </div>
@@ -33,6 +34,7 @@
 import Produto from '../api/produto'
 // Components
 import Alerta from '../components/Alerta'
+import Carregando from '../components/Carregando'
 import Paginacao from '../components/Paginacao'
 
 const produto = new Produto()
@@ -45,6 +47,7 @@ export default {
         mensagem: '',
         tipo: ''
       },
+      carregando: false,
       busca: '',
       paginacao: {
         total: ''
@@ -59,24 +62,37 @@ export default {
   },
   components: {
     Alerta,
-    Paginacao
+    Paginacao,
+    Carregando
   },
   methods: {
     getProdutos(pagina) {
+      this.carregando = true
       produto.getProdutos(20, pagina)
-      .then( (res) => {
-        this.paginacao.total = res.data.totalPaginas
-        this.dados = res.data.produto
-      })
+        .then( (res) => {
+          this.carregando = false
+          this.paginacao.total = res.data.totalPaginas
+          this.dados = res.data.produto
+        }) .catch( () => {
+          this.carregando = false
+        })
     },
     selecionaPagina(e) {
       this.getProdutos(e)
     },
     buscar() {
-      produto.busca(this.busca)
-      .then( (res) => {
-        this.dados = res.data
-      })
+      this.carregando = true
+      if(this.busca == '') {
+        this.getProdutos(1)
+      } else {
+        produto.busca(this.busca)
+          .then( (res) => {
+            this.carregando = false
+            this.dados = res.data
+          }) .catch( () => {
+            this.carregando = false
+          })
+      }
     }
   }
 }
