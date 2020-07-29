@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <Alerta :mensagem="alerta.mensagem" :tipo="alerta.tipo" :estado="alerta.show" />
+    <Carregando v-if="carregando" />
     <div class="row">
       <div class="col-12">
         <h1>Pedido {{codigoPedido}}</h1>
@@ -81,6 +82,7 @@
 <script>
 import Pedido from '../api/pedido'
 import Alerta from '../components/Alerta'
+import Carregando from '../components/Carregando'
 
 const pedido = new Pedido()
 
@@ -102,6 +104,7 @@ export default {
       valorFrete: '',
       valorTotal: '',
       codigoPedido: '',
+      carregando: false,
       status: {
         opcoes: [{ status: 'Separação' }, { status: 'Enviado' }, { status: 'Entregue' }, { status: 'Cancelado' }],
         selecionado: ''
@@ -119,7 +122,8 @@ export default {
     }
   },
   components: {
-    Alerta
+    Alerta,
+    Carregando
   },
   created() {
     document.title = "E-commerce - Edição de Pedido";
@@ -127,50 +131,54 @@ export default {
   },
   methods: {
     getPedido(id) {
+      this.carregando = true
       pedido.getPedido(id)
-      .then( (res) => {
-        console.log(res.data)
-        this.valorPedido = formataPrecoBrasil.format(res.data.valor.toString())
-        this.valorFrete = formataPrecoBrasil.format(res.data.frete.toString())
-        const valorTotalSoma = res.data.valor + res.data.frete
-        this.valorTotal = formataPrecoBrasil.format(valorTotalSoma.toString())
-        this.status.selecionado = res.data.status
-        this.usuario = res.data.usuario
-        this.endereco = res.data.usuario.endereco
-        this.codigoPedido = res.data.codigoPedido
-        this.rastreio = res.data.rastreio
-        res.data.produtos.forEach((valor) => {
-          let valorProduto = formataPrecoBrasil.format(valor.produto.preco.toString())
-          this.produtos.push({
-            'titulo': valor.produto.titulo,
-            '_id': valor.produto._id,
-            'valorUnitario': valorProduto,
-            'quantidade': valor.quantidade
+        .then( (res) => {
+          this.carregando = false
+          this.valorPedido = formataPrecoBrasil.format(res.data.valor.toString())
+          this.valorFrete = formataPrecoBrasil.format(res.data.frete.toString())
+          const valorTotalSoma = res.data.valor + res.data.frete
+          this.valorTotal = formataPrecoBrasil.format(valorTotalSoma.toString())
+          this.status.selecionado = res.data.status
+          this.usuario = res.data.usuario
+          this.endereco = res.data.usuario.endereco
+          this.codigoPedido = res.data.codigoPedido
+          this.rastreio = res.data.rastreio
+          res.data.produtos.forEach((valor) => {
+            let valorProduto = formataPrecoBrasil.format(valor.produto.preco.toString())
+            this.produtos.push({
+              'titulo': valor.produto.titulo,
+              '_id': valor.produto._id,
+              'valorUnitario': valorProduto,
+              'quantidade': valor.quantidade
+            })
           })
-        });
-
-      })
+        }) .catch( () => {
+          this.carregando = false
+        })
     },
     atualiza() {
+      this.carregando = true
       const data = {
         status: this.status.selecionado,
         rastreio: this.rastreio
       }
       pedido.atualiza(data, this.$route.query.id)
-      .then( () => {
-        this.alerta = {
-          show: true,
-          mensagem: 'Pedido atualizado com sucesso',
-          tipo: 'success'
-        }
-      })
-      .catch( () => {
-        this.alerta = {
-          show: true,
-          mensagem: 'Pedido não atualizado',
-          tipo: 'danger'
-        }
-      })
+        .then( () => {
+          this.carregando = false
+          this.alerta = {
+            show: true,
+            mensagem: 'Pedido atualizado com sucesso',
+            tipo: 'success'
+          }
+        }) .catch( () => {
+          this.carregando = false
+          this.alerta = {
+            show: true,
+            mensagem: 'Pedido não atualizado',
+            tipo: 'danger'
+          }
+        })
     }
   }
 }

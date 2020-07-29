@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <Alerta :mensagem="alerta.mensagem" :tipo="alerta.tipo" :estado="alerta.show" />
+    <Carregando v-if="carregando" />
     <div class="row">
       <div class="col-12">
         <h1>Pedidos</h1>
@@ -19,6 +20,7 @@
 </template>
 <script>
 import Alerta from '../components/Alerta'
+import Carregando from '../components/Carregando'
 import Pedido from '../api/pedido'
 
 const pedido = new Pedido()
@@ -38,6 +40,7 @@ export default {
         mensagem: '',
         tipo: ''
       },
+      carregando: false,
       dados: [],
       fields: [
         { key: 'codigo', label: 'Código' },
@@ -48,29 +51,34 @@ export default {
       ],
     }
   },
+  components: {
+    Alerta,
+    Carregando
+  },
   created () {
     document.title = "E-commerce - Pedidos";
     this.getPedidos()
   },
-  components: {
-    Alerta
-  },
   methods: {
     getPedidos() {
+      this.carregando = true
       pedido.getPedidos()
-      .then( (res) => {
-        res.data.forEach((valor) => {
-          let valorPedido = formataPrecoBrasil.format(valor.valor.toString())
-          let valorFrete = formataPrecoBrasil.format(valor.frete.toString())
-          this.dados.push({
-            'codigo': valor.codigoPedido,
-            'preco': valorPedido,
-            'frete': valorFrete,
-            'usuario': valor.usuario.email,
-            'status': valor.status
+        .then( (res) => {
+          this.carregando = false
+          res.data.forEach((valor) => {
+            let valorPedido = formataPrecoBrasil.format(valor.valor.toString())
+            let valorFrete = formataPrecoBrasil.format(valor.frete.toString())
+            this.dados.push({
+              'codigo': valor.codigoPedido,
+              'preco': valorPedido,
+              'frete': valorFrete,
+              'usuario': valor.usuario.email,
+              'status': valor.status
+            })
           })
-        });
-      })
+        }) .catch( () => {
+          this.carregando = false
+        })
     }
   }
 }
