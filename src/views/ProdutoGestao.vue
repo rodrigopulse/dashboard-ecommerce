@@ -2,8 +2,19 @@
   <div class="container">
     <Alerta :mensagem="alerta.mensagem" :tipo="alerta.tipo" :estado="alerta.show" />
     <div class="row">
-      <div class="col-12">
+      <div class="col-6">
         <h1>Gestão de Produtos</h1>
+      </div>
+      <div class="col-6">
+        <b-input-group
+          size="lg"
+          class="mb-3"
+        >
+          <b-form-input v-model="busca" placeholder="Encontre o produto"></b-form-input>
+          <b-input-group-append>
+            <b-button size="sm" text="Button" @click="buscar()" variant="primary">Buscar</b-button>
+          </b-input-group-append>
+        </b-input-group>
       </div>
     </div>
     <div class="row">
@@ -34,6 +45,7 @@ export default {
         mensagem: '',
         tipo: ''
       },
+      busca: '',
       paginacao: {
         total: ''
       },
@@ -59,6 +71,12 @@ export default {
     },
     selecionaPagina(e) {
       this.getProdutos(e)
+    },
+    buscar() {
+      produto.busca(this.busca)
+      .then( (res) => {
+        this.dados = res.data
+      })
     }
   }
 }
