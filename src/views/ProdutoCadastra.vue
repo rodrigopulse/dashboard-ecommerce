@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <Alerta :mensagem="alerta.mensagem" :tipo="alerta.tipo" :estado="alerta.show" />
+    <Carregando v-if="carregando"/>
     <div class="crop-imagem" v-if="mostraCrop">
       <VueCropper
         ref="cropper"
@@ -215,6 +216,7 @@
 import Categoria from '../api/categoria'
 import Produto from '../api/produto'
 import VueCropper from 'vue-cropperjs'
+import Carregando from '../components/Carregando'
 import Alerta from '../components/Alerta'
 import {VMoney} from 'v-money'
 
@@ -248,6 +250,7 @@ export default {
         mensagem: '',
         tipo: ''
       },
+      carregando: false,
       // Crop
       imgSrc: '',
       mostraCrop: false,
@@ -268,6 +271,11 @@ export default {
       categorias: [],
     }
   },
+  components: {
+    VueCropper,
+    Alerta,
+    Carregando
+  },
   directives: {money: VMoney},
   created () {
     document.title = "E-commerce - Cadastro de Produto";
@@ -276,45 +284,46 @@ export default {
     }
     this.getCategoria()
   },
-  components: {
-    VueCropper,
-    Alerta
-  },
   methods: {
     get(id) {
+      this.carregando = true
       produto.getProduto(id)
-      .then( (res) => {
-        this.titulo = 'Edição de Produto'
-        this.botao = 'Salvar'
-        this.edicao = true
-        this.form = res.data
-        this.form.preco = formataPrecoBrasil.format(res.data.preco.toString())
-        this.form.categoria = res.data.categoria._id
-        if(res.data.imagens[0] != undefined) {
-          this.imagem1Preview = `http://localhost:3333/imagens/${res.data.imagens[0].filename}`
-          this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[0].filename}`).then((blob) => {
-            this.imagem1 = blob
-          })
-        }
-        if(res.data.imagens[1] != undefined) {
-          this.imagem2Preview = `http://localhost:3333/imagens/${res.data.imagens[1].filename}`
-          this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[1].filename}`).then((blob) => {
-            this.imagem2 = blob
-          })
-        }
-        if(res.data.imagens[2] != undefined) {
-          this.imagem3Preview = `http://localhost:3333/imagens/${res.data.imagens[2].filename}`
-          this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[2].filename}`).then((blob) => {
-            this.imagem3 = blob
-          })
-        }
-        if(res.data.imagens[3] != undefined) {
-          this.imagem4Preview = `http://localhost:3333/imagens/${res.data.imagens[3].filename}`
-          this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[3].filename}`).then((blob) => {
-            this.imagem4 = blob
-          })
-        }
-      })
+        .then( (res) => {
+          this.carregando = false
+          this.titulo = 'Edição de Produto'
+          this.botao = 'Salvar'
+          this.edicao = true
+          this.form = res.data
+          this.form.preco = formataPrecoBrasil.format(res.data.preco.toString())
+          this.form.categoria = res.data.categoria._id
+          if(res.data.imagens[0] != undefined) {
+            this.imagem1Preview = `http://localhost:3333/imagens/${res.data.imagens[0].filename}`
+            this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[0].filename}`).then((blob) => {
+              this.imagem1 = blob
+            })
+          }
+          if(res.data.imagens[1] != undefined) {
+            this.imagem2Preview = `http://localhost:3333/imagens/${res.data.imagens[1].filename}`
+            this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[1].filename}`).then((blob) => {
+              this.imagem2 = blob
+            })
+          }
+          if(res.data.imagens[2] != undefined) {
+            this.imagem3Preview = `http://localhost:3333/imagens/${res.data.imagens[2].filename}`
+            this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[2].filename}`).then((blob) => {
+              this.imagem3 = blob
+            })
+          }
+          if(res.data.imagens[3] != undefined) {
+            this.imagem4Preview = `http://localhost:3333/imagens/${res.data.imagens[3].filename}`
+            this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[3].filename}`).then((blob) => {
+              this.imagem4 = blob
+            })
+          }
+        })
+        .catch( () => {
+          this.carregando = false
+        })
     },
     getBlob(url) {
       return new Promise(function(resolve, reject) {
@@ -419,18 +428,22 @@ export default {
         centered: true
       })
         .then( (valor) => {
+          this.carregando = true
           if(valor) {
             produto.deleta(this.$route.query.id)
-            .then( () => {
-              this.$router.push('/produto/gestao')
-            })
+              .then( () => {
+                this.$router.push('/produto/gestao')
+              }) .catch( () => {
+                this.carregando = false
+              })
           }
         })
         .catch(() => {
-
+          this.carregando = false
         })
     },
     onSubmit() {
+      this.carregando = true
       if(this.edicao) {
         const formData = new FormData()
         formData.append('titulo', this.form.titulo)
@@ -446,6 +459,7 @@ export default {
         formData.append('imagens', this.imagem4)
         produto.atualiza(formData, this.$route.query.id)
         .then( () => {
+          this.carregando = false
           this.alerta = {
             show: true,
             mensagem: 'Produto atualizado com sucesso',
@@ -453,6 +467,7 @@ export default {
           }
           this.get(this.$route.query.id)
         }) .catch( () => {
+          this.carregando = false
           this.alerta = {
             show: true,
             mensagem: 'Ocorreu um erro',
@@ -479,12 +494,14 @@ export default {
             mensagem: 'Produto cadastrado com sucesso',
             tipo: 'success'
           }
+          this.carregando = false
         }) .catch( () => {
           this.alerta = {
             show: true,
             mensagem: 'Ocorreu um erro',
             tipo: 'danger'
           }
+          this.carregando = false
         })
       }
     }
