@@ -97,21 +97,14 @@
 
             </div>
             <div class="col-6">
-                <b-form-group label="Destaque">
-                  <b-form-checkbox
-                    id="destaque"
-                    v-model="form.destaque"
-                    name="destaque"
-                    value=true
-                    unchecked-value=false
-                    size="lg"
-                  >
-                    Esse produto é um destaque
-                  </b-form-checkbox>
-                </b-form-group>
+
+              <b-form-group label="Embalagem:" id="embalagem">
+                <b-form-select required v-model="form.embalagem" :options="embalagens" value-field="_id" text-field="titulo"></b-form-select>
+              </b-form-group>
 
             </div>
           </div>
+
           <div class="row mb-5">
 
             <div class="col-3">
@@ -214,6 +207,7 @@
 </template>
 <script>
 import Categoria from '../api/categoria'
+import Embalagem from '../api/embalagem'
 import Produto from '../api/produto'
 import VueCropper from 'vue-cropperjs'
 import Carregando from '../components/Carregando'
@@ -221,6 +215,7 @@ import Alerta from '../components/Alerta'
 import {VMoney} from 'v-money'
 
 const categoria = new Categoria()
+const embalagem = new Embalagem()
 const produto = new Produto()
 const formataPrecoBrasil = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -237,7 +232,8 @@ export default {
         preco: '',
         peso: '',
         categoria: '',
-        destaque: false
+        destaque: false,
+        embalagem: ''
       },
       money: {
         decimal: ',',
@@ -269,6 +265,7 @@ export default {
       botao: 'Cadastrar',
       edicao: false,
       categorias: [],
+      embalagens: []
     }
   },
   components: {
@@ -283,6 +280,7 @@ export default {
       this.get(this.$route.query.id)
     }
     this.getCategoria()
+    this.getEmbalagem()
   },
   methods: {
     get(id) {
@@ -296,6 +294,7 @@ export default {
           this.form = res.data
           this.form.preco = formataPrecoBrasil.format(res.data.preco.toString())
           this.form.categoria = res.data.categoria._id
+          this.form.embalagem = res.data.embalagem._id
           if(res.data.imagens[0] != undefined) {
             this.imagem1Preview = `http://localhost:3333/imagens/${res.data.imagens[0].filename}`
             this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[0].filename}`).then((blob) => {
@@ -408,6 +407,12 @@ export default {
         this.categorias = res.data
       })
     },
+    getEmbalagem() {
+      embalagem.getEmbalagens()
+        .then(res => {
+          this.embalagens = res.data
+        })
+    },
     transformaPreco(preco) {
       const precoTiraCifrao = preco.replace('R$ ', '')
       const precoTiraPonto = precoTiraCifrao.replace('.', '')
@@ -451,7 +456,8 @@ export default {
         formData.append('peso', this.form.peso)
         formData.append('estoque', this.form.estoque)
         formData.append('categoria', this.form.categoria)
-        formData.append('destaque', this.form.destaque)
+        formData.append('embalagem', this.form.embalagem)
+        //formData.append('destaque', this.form.destaque)
         formData.append('preco', this.transformaPreco(this.form.preco))
         formData.append('imagens', this.imagem1)
         formData.append('imagens', this.imagem2)
@@ -481,6 +487,7 @@ export default {
         formData.append('peso', this.form.peso)
         formData.append('estoque', this.form.estoque)
         formData.append('categoria', this.form.categoria)
+        formData.append('embalagem', this.form.embalagem)
         formData.append('destaque', this.form.destaque)
         formData.append('preco', this.transformaPreco(this.form.preco))
         formData.append('imagens', this.imagem1)

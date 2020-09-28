@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export default class Pedido{
+export default class Pedido {
   getPedidos() {
     return new Promise( (resolve, reject) => {
       axios({
