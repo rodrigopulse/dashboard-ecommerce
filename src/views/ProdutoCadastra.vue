@@ -296,26 +296,26 @@ export default {
           this.form.categoria = res.data.categoria._id
           this.form.embalagem = res.data.embalagem._id
           if(res.data.imagens[0] != undefined) {
-            this.imagem1Preview = `http://localhost:3333/imagens/${res.data.imagens[0].filename}`
-            this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[0].filename}`).then((blob) => {
+            this.imagem1Preview = `${process.env.VUE_APP_IMAGENS}/${res.data.imagens[0].filename}`
+            this.getBlob(`${process.env.VUE_APP_IMAGENS}/${res.data.imagens[0].filename}`).then((blob) => {
               this.imagem1 = blob
             })
           }
           if(res.data.imagens[1] != undefined) {
-            this.imagem2Preview = `http://localhost:3333/imagens/${res.data.imagens[1].filename}`
-            this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[1].filename}`).then((blob) => {
+            this.imagem2Preview = `${process.env.VUE_APP_IMAGENS}/${res.data.imagens[1].filename}`
+            this.getBlob(`${process.env.VUE_APP_IMAGENS}/${res.data.imagens[1].filename}`).then((blob) => {
               this.imagem2 = blob
             })
           }
           if(res.data.imagens[2] != undefined) {
-            this.imagem3Preview = `http://localhost:3333/imagens/${res.data.imagens[2].filename}`
-            this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[2].filename}`).then((blob) => {
+            this.imagem3Preview = `${process.env.VUE_APP_IMAGENS}/${res.data.imagens[2].filename}`
+            this.getBlob(`${process.env.VUE_APP_IMAGENS}/${res.data.imagens[2].filename}`).then((blob) => {
               this.imagem3 = blob
             })
           }
           if(res.data.imagens[3] != undefined) {
-            this.imagem4Preview = `http://localhost:3333/imagens/${res.data.imagens[3].filename}`
-            this.getBlob(`http://localhost:3333/imagens/${res.data.imagens[3].filename}`).then((blob) => {
+            this.imagem4Preview = `${process.env.VUE_APP_IMAGENS}/${res.data.imagens[3].filename}`
+            this.getBlob(`${process.env.VUE_APP_IMAGENS}/${res.data.imagens[3].filename}`).then((blob) => {
               this.imagem4 = blob
             })
           }
