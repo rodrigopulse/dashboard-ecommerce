@@ -6,7 +6,7 @@
       <VueCropper
         ref="cropper"
         :aspect-ratio="aspectRatio"
-        :output-size="600"
+        output-size="600"
         :src="imgSrc"
         alt="Imagem Crop"
       />
@@ -35,6 +35,18 @@
               required
               size="lg"
               placeholder="Digite o título do produto"
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group
+            id="slug"
+            label="Slug (url):"
+          >
+            <b-form-input
+              v-model="form.slug"
+              required
+              size="lg"
+              placeholder="Digite uma url para o produto"
             ></b-form-input>
           </b-form-group>
 
@@ -228,6 +240,7 @@ export default {
     return {
       form: {
         titulo: '',
+        slug: '',
         descricao: '',
         preco: '',
         peso: '',
@@ -295,6 +308,7 @@ export default {
           this.form.preco = formataPrecoBrasil.format(res.data.preco.toString())
           this.form.categoria = res.data.categoria._id
           this.form.embalagem = res.data.embalagem._id
+          this.form.slug = res.data.slug
           if(res.data.imagens[0] != undefined) {
             this.imagem1Preview = `${process.env.VUE_APP_IMAGENS}/${res.data.imagens[0].filename}`
             this.getBlob(`${process.env.VUE_APP_IMAGENS}/${res.data.imagens[0].filename}`).then((blob) => {
@@ -452,6 +466,7 @@ export default {
       if(this.edicao) {
         const formData = new FormData()
         formData.append('titulo', this.form.titulo)
+        formData.append('slug', this.form.slug)
         formData.append('descricao', this.form.descricao)
         formData.append('peso', this.form.peso)
         formData.append('estoque', this.form.estoque)
@@ -483,6 +498,7 @@ export default {
       } else {
         const formData = new FormData()
         formData.append('titulo', this.form.titulo)
+        formData.append('slug', this.form.slug)
         formData.append('descricao', this.form.descricao)
         formData.append('peso', this.form.peso)
         formData.append('estoque', this.form.estoque)

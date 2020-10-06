@@ -53,7 +53,7 @@ export default {
         total: ''
       },
       dados: [],
-      fields: [{ key: 'titulo', label: 'Título' }, { key: 'descricao', label: 'Descrição' }],
+      fields: [{ key: 'titulo', label: 'Título' }],
     }
   },
   created () {
